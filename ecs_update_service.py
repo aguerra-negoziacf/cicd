@@ -53,7 +53,6 @@ def assume_role(arn, session_name):
                             aws_secret_access_key=response['Credentials']['SecretAccessKey'],
                             aws_session_token=response['Credentials']['SessionToken'])
 
-    client = session.client('sts')
     client = session.client('ecs')
 
 def main():
