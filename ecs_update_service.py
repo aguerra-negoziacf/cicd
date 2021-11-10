@@ -10,33 +10,33 @@ roleArn            = os.getenv('ROLE_ARN')
 sessionName        = os.getenv('SESSION_NAME', 'ecsDeploy')
 
 def updateTaskDefinition(client, taskDefinitionName, newEcrImage, clusterName, serviceName):
-    taskDefResponse = client.describe_task_definition(
-        taskDefinition=taskDefinitionName
+    taskDefResponse    = client.describe_task_definition(
+        taskDefinition = taskDefinitionName
     )
     for container in taskDefResponse['taskDefinition']['containerDefinitions']:
         container['image'] = newEcrImage
 
     taskDefRegisterResponse = client.register_task_definition(
-        family=taskDefinitionName,
-        containerDefinitions=taskDefResponse['taskDefinition']['containerDefinitions']
+        family               = taskDefinitionName,
+        containerDefinitions = taskDefResponse['taskDefinition']['containerDefinitions']
     )
     
     revision = (taskDefRegisterResponse['taskDefinition']['revision'])
     
     client.update_service(
-        cluster=clusterName,
-        service=serviceName,
-        taskDefinition=taskDefinitionName + ':' + str(revision)
+        cluster        = clusterName,
+        service        = serviceName,
+        taskDefinition = taskDefinitionName + ':' + str(revision)
     )
 
 def waitForServiceUpdate(client, clusterName, serviceName):
     waiter = client.get_waiter('services_stable')
     waiter.wait(
-        cluster=clusterName,
-        services=[serviceName],
-        WaiterConfig={
-        'Delay': delay,
-        'MaxAttempts': maxAttempts
+        cluster      = clusterName,
+        services     = [serviceName],
+        WaiterConfig = {
+            'Delay'      : delay,
+            'MaxAttempts': maxAttempts
         }
     )
 
@@ -44,9 +44,11 @@ def assumeRole(roleArn, sessionName):
     client = boto3.client('sts')
     
     response = client.assume_role(RoleArn=roleArn, RoleSessionName=sessionName)
-    session = boto3.Session(aws_access_key_id=response['Credentials']['AccessKeyId'],
-        aws_secret_access_key=response['Credentials']['SecretAccessKey'],
-        aws_session_token=response['Credentials']['SessionToken'])
+    session = boto3.Session(
+        aws_access_key_id     = response['Credentials']['AccessKeyId'],
+        aws_secret_access_key = response['Credentials']['SecretAccessKey'],
+        aws_session_token     = response['Credentials']['SessionToken'])
+    
     client = session.client('ecs')
     return client
 
