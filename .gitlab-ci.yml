@@ -6,7 +6,6 @@
 # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 stages:
 - build
-- deploy
 
 build:
   stage: build
