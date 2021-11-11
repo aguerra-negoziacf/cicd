@@ -54,7 +54,7 @@ def assumeRole(roleArn, sessionName):
         aws_secret_access_key = response['Credentials']['SecretAccessKey'],
         aws_session_token     = response['Credentials']['SessionToken'])
     
-    client = session.client('ecs', 'us-east-1')
+    client = session.client('ecs')
     return client
 
 def main():
