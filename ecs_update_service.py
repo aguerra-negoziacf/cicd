@@ -1,12 +1,12 @@
 import boto3, os, json
 
-taskDefinitionName = os.getenv('TASK_DEFINITION_NAME', 'qa-core-api-td')
-clusterName        = os.getenv('CLUSTER_NAME', 'ngz-qa-core')
-serviceName        = os.getenv('SERVICE_NAME', 'qa-core-api-svc')
-newEcrImage        = os.getenv('NEW_ECR_IMAGE', 'testingImage')
+taskDefinitionName = os.getenv('TASK_DEFINITION_NAME')
+clusterName        = os.getenv('CLUSTER_NAME')
+serviceName        = os.getenv('SERVICE_NAME')
+newEcrImage        = os.getenv('NEW_ECR_IMAGE')
 delay              = os.getenv('DELAY', 30)
 maxAttempts        = os.getenv('MAX_ATTEMPTS', 30)
-roleArn            = os.getenv('ROLE_ARN', 'arn:aws:iam::787437540378:role/terraform-import-ecs-runner')
+roleArn            = os.getenv('ROLE_ARN')
 sessionName        = os.getenv('SESSION_NAME', 'ecsDeploy')
 envNvars           = os.getenv('ENV_VARS')
 
