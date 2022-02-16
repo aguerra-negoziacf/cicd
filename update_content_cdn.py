@@ -31,6 +31,7 @@ def updateContentBucket(client, s3BucketUri, pathToCopy):
             local_path = os.path.join(root, file)
             s3_path = os.path.relpath(local_path, pathToCopy)
             mimetype, _ = mimetypes.guess_type(local_path)
+            if(not mimetype): mimetype = 'binary/octet-stream'
             print("Uploading...", s3_path)
             client.upload_file(local_path, s3BucketUri, s3_path, ExtraArgs={"ContentType": mimetype, "ACL": 'public-read'})
 
