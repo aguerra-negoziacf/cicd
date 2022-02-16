@@ -3,8 +3,6 @@ import os
 import time
 import mimetypes
 
-from mypy_boto3_s3 import S3Client
-
 s3BucketUri             = os.getenv('S3_BUCKET_URI')
 cloudFrontClusterId     = os.getenv('CLOUD_FRONT_CLUSTER_ID')
 roleArn                 = os.getenv('ROLE_ARN')
@@ -27,7 +25,7 @@ def createInvalidation(client, cloudFrontClusterId):
     )
     print("Invalidation created successfully with Id: " + res['Invalidation']['Id'])
 
-def updateContentBucket(client: S3Client, s3BucketUri, pathToCopy):
+def updateContentBucket(client, s3BucketUri, pathToCopy):
     for root, dirs, files in os.walk(pathToCopy):
         for file in files:
             local_path = os.path.join(root, file)
@@ -39,7 +37,7 @@ def updateContentBucket(client: S3Client, s3BucketUri, pathToCopy):
     list_objects = client.list_objects_v2(Bucket=s3BucketUri)
     print("Uploaded files...", list_objects['KeyCount'])
 
-def deleteContentBucket(client: S3Client, s3BucketUri):
+def deleteContentBucket(client, s3BucketUri):
     list_objects = client.list_objects_v2(Bucket=s3BucketUri)
     
     if (list_objects['KeyCount'] == 0): return
