@@ -6,9 +6,11 @@ RUN apk add --no-cache \
     bash=5.1.4-r0 \
     && rm -rf /var/cache/apk/*
 
-COPY requirements.txt /
-RUN pip install --no-cache-dir -r /requirements.txt
+WORKDIR /app
 
-COPY ecs_update_service.py /ecs_update_service.py
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r ./requirements.txt
+
+COPY *.py ./
 
 CMD ["bash"]
