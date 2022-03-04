@@ -2,13 +2,13 @@ import boto3
 import os
 import json
 
-taskDefinitionName = os.getenv('TASK_DEFINITION_NAME')
-clusterName        = os.getenv('CLUSTER_NAME')
-serviceName        = os.getenv('SERVICE_NAME')
-newEcrImage        = os.getenv('NEW_ECR_IMAGE')
+taskDefinitionName = os.getenv('TASK_DEFINITION_NAME', 'qa-backend-td')
+clusterName        = os.getenv('CLUSTER_NAME', 'ngz-qa-apps')
+serviceName        = os.getenv('SERVICE_NAME', 'qa-backend-svc')
+newEcrImage        = os.getenv('NEW_ECR_IMAGE', '794130475503.dkr.ecr.us-east-1.amazonaws.com/backend:latest')
 delay              = os.getenv('DELAY', 30)
 maxAttempts        = os.getenv('MAX_ATTEMPTS', 30)
-roleArn            = os.getenv('ROLE_ARN')
+roleArn            = os.getenv('ROLE_ARN', 'arn:aws:iam::787437540378:role/terraform-import-ecs-runner')
 sessionName        = os.getenv('SESSION_NAME', 'ecsDeploy')
 envNvars           = os.getenv('ENV_VARS')
 
@@ -27,7 +27,11 @@ def updateTaskDefinition(client, taskDefinitionName, newEcrImage,
     taskDefRegisterResponse = client.register_task_definition(
         family               = taskDefinitionName,
         containerDefinitions = taskDefResponse['taskDefinition']
-                                              ['containerDefinitions']
+                                              ['containerDefinitions'],
+        networkMode          = taskDefResponse['taskDefinition']
+                                              ['networkMode'],
+        taskRoleArn          = taskDefResponse['taskDefinition']
+                                              ['taskRoleArn']
     )
     revision = (taskDefRegisterResponse['taskDefinition']['revision'])
     client.update_service(
