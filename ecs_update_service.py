@@ -28,8 +28,6 @@ def updateTaskDefinition(client, taskDefinitionName, newEcrImage,
         family               = taskDefinitionName,
         containerDefinitions = taskDefResponse['taskDefinition']
                                               ['containerDefinitions'],
-        networkMode          = taskDefResponse['taskDefinition']
-                                              ['networkMode'],
         taskRoleArn          = taskDefResponse['taskDefinition']
                                               ['taskRoleArn']
     )
