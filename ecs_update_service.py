@@ -28,7 +28,7 @@ def updateTaskDefinition(client, taskDefinitionName, newEcrImage,
         family               = taskDefinitionName,
         containerDefinitions = taskDefResponse['taskDefinition']
                                               ['containerDefinitions'],
-        taskRoleArn          = taskDefResponse['taskDefinition']['taskRoleArn'] or None
+        taskRoleArn          = taskDefResponse['taskDefinition']['taskRoleArn'] or ''
     )
     revision = (taskDefRegisterResponse['taskDefinition']['revision'])
     client.update_service(
