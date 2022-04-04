@@ -1,0 +1,31 @@
+.semantic-release:
+  image: maven:3.6.3-openjdk-8-slim
+  stage: release
+  cache:
+    paths:
+      - .npm/
+      - .m2/repository
+  before_script:  
+    - |
+      curl -sL https://deb.nodesource.com/setup_16.x | bash - &&\
+      curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -   &&\
+      echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list   &&\
+      apt-get update -qq &&\
+      apt-get install -qq --no-install-recommends \
+        nodejs \
+        yarn \
+        git-core \
+        ca-certificates &&\
+      apt-get upgrade -qq &&\
+      rm -rf /var/lib/apt/lists/*
+    - npm install --cache .npm --prefer-offline -g semantic-release @semantic-release/gitlab @semantic-release/git @conveyal/maven-semantic-release
+  script:
+    - semantic-release
+
+publish:
+  extends: .semantic-release
+  rules:
+    - if: '$RELEASE_DISABLED'
+      when: never
+    # Only protected branches
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_REF_PROTECTED'

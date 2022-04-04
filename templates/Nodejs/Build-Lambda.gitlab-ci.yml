@@ -1,0 +1,28 @@
+variables:
+  NODE_VERSION: "14.17-alpine"
+  BUILD_OUTDIR: "dist"
+
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  image: "node:${NODE_VERSION}"
+  before_script:
+    - npm install
+  script:
+    - |
+      mkdir .dist
+      cp -R * .dist
+      mv .dist dist
+  artifacts:
+    expire_in: 30 day
+    paths:
+      - "${BUILD_OUTDIR}/"
+  rules:
+    - if: '$BUILD_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_REF_PROTECTED'
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'

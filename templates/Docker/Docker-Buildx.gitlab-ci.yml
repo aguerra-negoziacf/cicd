@@ -1,0 +1,58 @@
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+
+variables:
+  DOCKER_VERSION: "20.10"
+  DOCKER_FILE_PATH: "Dockerfile"
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+.docker: &docker
+  image: "registry.gitlab.com/negozia/cicd-runners:docker-buildx"
+  services:
+    - "docker:${DOCKER_VERSION}-dind"
+
+.build: &build
+  <<: *docker
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_JOB_TOKEN" "$CI_REGISTRY"
+
+.docker_build: &docker_build
+  <<: *build
+  stage: build
+  variables:
+    REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE"
+    REGISTRY_IMAGE_LATEST: "$REGISTRY_IMAGE:latest"
+  script:
+    # Tag image
+    - |
+      if [[ -z "$CI_COMMIT_TAG" ]]; then
+        export APPLICATION_TAG=${APPLICATION_TAG:-$CI_COMMIT_SHORT_SHA}
+      else
+        export APPLICATION_TAG=${APPLICATION_TAG:-$CI_COMMIT_TAG}
+      fi
+    # Build Image
+    - docker image pull --quiet "$REGISTRY_IMAGE_LATEST" || echo "No previously cached image found. The docker build will proceed without using a cached image"
+    - |
+      docker buildx build \
+        --cache-from "$REGISTRY_IMAGE_LATEST" \
+        --tag "$REGISTRY_IMAGE:$APPLICATION_TAG" \
+        -f "$DOCKER_FILE_PATH" \
+        --build-arg BUILDKIT_INLINE_CACHE=1 \
+        --build-arg ENV=$ENV \
+        --progress=plain \
+        --push \
+        . 2>&1
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        docker tag "$REGISTRY_IMAGE:$APPLICATION_TAG" "$REGISTRY_IMAGE_LATEST"
+        docker push "$REGISTRY_IMAGE_LATEST"
+      fi
+  rules:
+    - if: '$BUILD_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_REF_PROTECTED'
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+
+docker_build:
+  <<: *docker_build

@@ -1,0 +1,31 @@
+variables:
+  NODE_VERSION: "16.13-alpine"
+  BUILD_OUTDIR: "dist"
+
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  image: "node:${NODE_VERSION}"
+  before_script:
+    - npm install
+  script:
+    - |
+      if [[ -z "$CI_COMMIT_TAG" ]]; then
+        export ENV=${ENV:-'test'}
+      else
+        export ENV=${ENV:-'production'}
+      fi
+    - npm run build:ci:$ENV
+  artifacts:
+    expire_in: 30 day
+    paths:
+      - "${BUILD_OUTDIR}/"
+  rules:
+    - if: '$BUILD_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_REF_PROTECTED'
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
