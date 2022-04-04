@@ -10,7 +10,6 @@ docker_build:
     DOCKER_DRIVER: overlay2
     REGISTRY_IMAGE: "$CI_REGISTRY/$CI_PROJECT_NAME"
   before_script:
-    - apk add --update --no-cache \
-        curl jq python3 py3-pip && \
-        pip install awscli
+    - apk add --update --no-cache curl jq py-pip
+    - pip install awscli
     - aws ecr get-login-password | docker login --username AWS --password-stdin $CI_REGISTRY
