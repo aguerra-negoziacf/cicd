@@ -1,0 +1,19 @@
+.semantic-release:
+  image: node:14-buster-slim
+  stage: release
+  cache:
+    paths:
+      - .npm/
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
+    - npm install --cache .npm --prefer-offline -g semantic-release @semantic-release/gitlab @semantic-release/git
+  script:
+    - semantic-release
+
+publish:
+  extends: .semantic-release
+  rules:
+    - if: '$RELEASE_DISABLED'
+      when: never
+    # Only protected branches
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_REF_PROTECTED'
