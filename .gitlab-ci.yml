@@ -13,5 +13,3 @@ include:
 
 docker_build:
   extends: .docker_build
-  variables:
-    APPLICATION_TAG: "latest-pre"

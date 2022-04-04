@@ -1,5 +1,5 @@
 variables:
-  CICD_RUNNERS_IMAGE_VERSION: 'latest-pre'
+  CICD_RUNNERS_IMAGE_VERSION: 'latest'
 
 .deploy_base: &deploy_base
   variables:
