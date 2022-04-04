@@ -2,7 +2,7 @@ include:
   - local: /templates/Docker/Docker-Buildx.gitlab-ci.yml
 
 docker_build:
-  extends: .docker_build_template
+  extends: .docker_build
   image: "registry.gitlab.com/negozia/cicd-runners:docker-buildx-aws-cli"
   variables:
     # Disable TLS since we're running inside local network.
