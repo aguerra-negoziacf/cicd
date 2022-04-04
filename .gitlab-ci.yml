@@ -5,6 +5,7 @@
 
 stages:
   - build
+  - test
 
 include:
   - local: '/templates/Workflows/Manual-Trigger-Pipelines.gitlab-ci.yml'
