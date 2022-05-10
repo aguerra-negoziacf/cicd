@@ -7,5 +7,5 @@ FROM docker:${DOCKER_VERSION}
 COPY --from=buildx-bin /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 
 RUN apk add --update --no-cache \
-  curl jq python3 py3-pip && \
+  curl jq python3 py3-pip git && \
   pip install awscli

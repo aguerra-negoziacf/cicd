@@ -5,12 +5,6 @@ docker_build:
   extends: .docker_build
   image: "registry.gitlab.com/negozia/cicd-runners:docker-buildx-aws-cli"
   variables:
-    # Disable TLS since we're running inside local network.
-    DOCKER_TLS_CERTDIR: "" # No TLS
-    # Use the overlayfs driver for improved performance.
-    DOCKER_DRIVER: overlay2
-    # Use Docker BuildKit for better caching and faster builds
-    DOCKER_BUILDKIT: 1
     BUILDKIT_INLINE_CACHE: 1
     REGISTRY_IMAGE: "$CI_REGISTRY/$CI_PROJECT_NAME"
   before_script:

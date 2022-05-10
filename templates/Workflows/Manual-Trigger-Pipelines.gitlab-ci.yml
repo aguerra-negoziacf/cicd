@@ -10,7 +10,7 @@ workflow:
 include:
   - local: '/templates/Test/Global.gitlab-ci.yml'
     rules:
-      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
 # workflow:
 #   rules:
