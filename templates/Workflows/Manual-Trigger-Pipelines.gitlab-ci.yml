@@ -1,8 +1,8 @@
 workflow:
   rules:
     # Trigger soruce
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: never
+    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != $CI_DEFAULT_BRANCH'
+    #   when: never
     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH'
       when: never
     - when: always
@@ -10,7 +10,7 @@ workflow:
 include:
   - local: '/templates/Test/Global.gitlab-ci.yml'
     rules:
-      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH
 
 # workflow:
 #   rules:

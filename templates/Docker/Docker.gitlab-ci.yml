@@ -1,14 +1,15 @@
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 
-variables:
-  DOCKER_VERSION: "20.10"
-  DOCKER_FILE_PATH: "Dockerfile"
-  DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ""
-
 .docker: &docker
   image: "docker:${DOCKER_VERSION}"
+  variables:
+    DOCKER_VERSION: "20.10"
+    DOCKER_FILE_PATH: "Dockerfile"
+    # Disable TLS since we're running inside local network.
+    DOCKER_TLS_CERTDIR: "" # No TLS
+    # Use the overlayfs driver for improved performance.
+    DOCKER_DRIVER: overlay2
   services:
     - "docker:${DOCKER_VERSION}-dind"
 
@@ -18,7 +19,7 @@ variables:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_JOB_TOKEN" "$CI_REGISTRY"
 
 .docker_build: &docker_build
-  <<: *build
+  extends: .build
   stage: build
   variables:
     REGISTRY_IMAGE: "$CI_REGISTRY_IMAGE"
