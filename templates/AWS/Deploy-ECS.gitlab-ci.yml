@@ -48,7 +48,7 @@ deploy_prod:
   #   name: prod
   #   url: https://creditointeligente.co
   rules:
-    - if: '$DEPLOY_PROD'
+    - if: '$DEPLOY_DISABLED'
       when: never
     - if: '$CI_COMMIT_TAG'
 
@@ -63,6 +63,6 @@ deploy_prod_failover:
   #   name: prod
   #   url: https://creditointeligente.co
   rules:
-    - if: '$DEPLOY_PROD || $DEPLOY_PROD_FAILOVER'
+    - if: '$DEPLOY_DISABLED || $DEPLOY_FAILOVER_DISABLED'
       when: never
     - if: '$CI_COMMIT_TAG'
