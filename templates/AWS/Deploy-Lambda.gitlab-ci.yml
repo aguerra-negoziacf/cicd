@@ -37,11 +37,11 @@ deploy_prod:
   #   name: prod
   #   url: https://creditointeligente.co
   rules:
-    - if: '$DEPLOY_PROD != "true"'
+    - if: '$DEPLOY_PROD'
       when: never
     - if: '$CI_COMMIT_TAG'
 
-deploy_prod:failover:
+deploy_prod_failover:
   extends: .deploy_base
   when: manual
   variables:
@@ -52,6 +52,6 @@ deploy_prod:failover:
   #   name: prod
   #   url: https://creditointeligente.co
   rules:
-    - if: '$DEPLOY_PROD != "true"'
+    - if: '$DEPLOY_PROD || $DEPLOY_PROD_FAILOVER'
       when: never
     - if: '$CI_COMMIT_TAG'
