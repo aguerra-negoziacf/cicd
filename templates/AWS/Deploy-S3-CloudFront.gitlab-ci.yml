@@ -48,9 +48,8 @@ deploy_prod_failover:
     AWS_DEFAULT_REGION: "us-west-2"
     ROLE_ARN: "${ROLE_ARN_PROD}"
     CLOUD_FRONT_CLUSTER_ID: "${CLOUD_FRONT_CLUSTER_ID_PROD}"
-    MATCH_FILES_SWTICH_REGION: "main*.js"
   script:
-    - sed -E 's/(ue1)\.([a-z\.]+creditodigitalinteligente\.com)/uw2.\2/g' "dist/${MATCH_FILES_SWTICH_REGION}"
+    - sed -i 's/\/\/ue1/\/\/uw2/g' ./dist/main*.js
     - python3 /update_content_cdn.py
   rules:
     - if: '$DEPLOY_DISABLED || $DEPLOY_FAILOVER_DISABLED'
