@@ -46,7 +46,7 @@
         .
     - docker push "$REGISTRY_IMAGE:$APPLICATION_TAG"
     - |
-      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+      if [[ "$CI_COMMIT_TAG" ]]; then
         docker tag "$REGISTRY_IMAGE:$APPLICATION_TAG" "$REGISTRY_IMAGE_LATEST"
         docker push "$REGISTRY_IMAGE_LATEST"
       fi
