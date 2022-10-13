@@ -8,6 +8,7 @@ cloudFrontClusterId     = os.getenv('CLOUD_FRONT_CLUSTER_ID')
 roleArn                 = os.getenv('ROLE_ARN')
 pathBuild               = os.getenv('PATH_BUILD', './dist')
 sessionName             = os.getenv('SESSION_NAME', 's3Deploy')
+region                  = os.getenv('AWS_REGION', 'us-east-1')
 
 
 def createInvalidation(client, cloudFrontClusterId):
@@ -57,7 +58,7 @@ def deleteContentBucket(client, s3BucketUri):
 
 
 def assumeRole(roleArn, sessionName):
-    client = boto3.client('sts')
+    client = boto3.client('sts', region_name=region)
     response = client.assume_role(RoleArn=roleArn, RoleSessionName=sessionName)
     session = boto3.Session(
         aws_access_key_id     = response['Credentials']['AccessKeyId'],
@@ -69,8 +70,8 @@ def assumeRole(roleArn, sessionName):
 
 def main():
     session = assumeRole(roleArn, sessionName)
-    s3Client = session.client('s3')
-    cfClient = session.client('cloudfront')
+    s3Client = session.client('s3', region_name=region)
+    cfClient = session.client('cloudfront', region_name=region)
 
     deleteContentBucket(s3Client, s3BucketUri)
     updateContentBucket(s3Client, s3BucketUri, pathBuild)

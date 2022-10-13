@@ -45,7 +45,7 @@ deploy_prod_failover:
   variables:
     ENV: prod
     S3_BUCKET_URI: "${S3_BUCKET_URI}-failover"
-    AWS_DEFAULT_REGION: "us-west-2"
+    AWS_REGION: "us-west-2"
     ROLE_ARN: "${ROLE_ARN_PROD}"
     CLOUD_FRONT_CLUSTER_ID: "${CLOUD_FRONT_CLUSTER_ID_PROD}"
   script:

@@ -7,6 +7,7 @@ lambdaName               = os.getenv('LAMBDA_NAME', 'qa-failed-pagares-worker')
 roleArn                 = os.getenv('ROLE_ARN', 'arn:aws:iam::787437540378:role/QANegoziaAdmin')
 pathBuild               = os.getenv('PATH_BUILD', './dist')
 sessionName             = os.getenv('SESSION_NAME', 'lambdaDeploy')
+region                  = os.getenv('AWS_REGION', 'us-east-1')
 
 def make_zip_file_bytes(path):
     zip_file = os.path.abspath(path)
@@ -32,7 +33,7 @@ def updateContentLambda(client, lambdaName, pathBuild):
     print("Lambda updated...", response['FunctionName']) if response['FunctionName'] == lambdaName else exit(1)
 
 def assumeRole(roleArn, sessionName):
-    client = boto3.client('sts')
+    client = boto3.client('sts', region_name=region)
     response = client.assume_role(RoleArn=roleArn, RoleSessionName=sessionName)
     session = boto3.Session(
         aws_access_key_id     = response['Credentials']['AccessKeyId'],
@@ -44,7 +45,7 @@ def assumeRole(roleArn, sessionName):
 
 def main():
     session = assumeRole(roleArn, sessionName)
-    lambdaClient = session.client('lambda')
+    lambdaClient = session.client('lambda', region_name=region)
 
     updateContentLambda(lambdaClient, lambdaName, pathBuild)
 
