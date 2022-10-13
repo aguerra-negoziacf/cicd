@@ -2,15 +2,16 @@ import boto3
 import os
 import json
 
-taskDefinitionName = os.getenv('TASK_DEFINITION_NAME')
-clusterName        = os.getenv('CLUSTER_NAME')
-serviceName        = os.getenv('SERVICE_NAME')
-newEcrImage        = os.getenv('NEW_ECR_IMAGE')
+taskDefinitionName = os.getenv('TASK_DEFINITION_NAME')#, 'prod-websocket-td')
+clusterName        = os.getenv('CLUSTER_NAME')#, 'ngz-prod-apps')
+serviceName        = os.getenv('SERVICE_NAME')#, 'prod-websocket-svc')
+newEcrImage        = os.getenv('NEW_ECR_IMAGE')#, '794130475503.dkr.ecr.us-east-1.amazonaws.com/websocket:latest')
 delay              = os.getenv('DELAY', 30)
 maxAttempts        = os.getenv('MAX_ATTEMPTS', 30)
-roleArn            = os.getenv('ROLE_ARN')
+roleArn            = os.getenv('ROLE_ARN')#, 'arn:aws:iam::200023452677:role/terraform-import-ecs-runner')
 sessionName        = os.getenv('SESSION_NAME', 'ecsDeploy')
 envNvars           = os.getenv('ENV_VARS')
+region             = os.getenv('AWS_REGION', 'us-east-1')
 
 
 def updateTaskDefinition(client, taskDefinitionName, newEcrImage,
@@ -51,13 +52,13 @@ def waitForServiceUpdate(client, clusterName, serviceName):
 
 
 def assumeRole(roleArn, sessionName):
-    client = boto3.client('sts')
+    client = boto3.client('sts', region_name=region)
     response = client.assume_role(RoleArn=roleArn, RoleSessionName=sessionName)
     session = boto3.Session(
         aws_access_key_id     = response['Credentials']['AccessKeyId'],
         aws_secret_access_key = response['Credentials']['SecretAccessKey'],
         aws_session_token     = response['Credentials']['SessionToken'])
-    client = session.client('ecs')
+    client = session.client('ecs', region_name=region)
     return client
 
 

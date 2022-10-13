@@ -58,7 +58,7 @@ deploy_prod_failover:
   variables:
     ENV: prod
     ROLE_ARN: "${ROLE_ARN_PROD}"
-    AWS_DEFAULT_REGION: "us-west-2"
+    AWS_REGION: "us-west-2"
   # environment:
   #   name: prod
   #   url: https://creditointeligente.co
