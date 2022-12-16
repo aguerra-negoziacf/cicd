@@ -18,10 +18,7 @@ build:
     - pnpm config set store-dir .pnpm-store
     - pnpm install --prod
   script:
-    - |
-      mkdir ".${BUILD_OUTDIR}"
-      cp -R * ".${BUILD_OUTDIR}"
-      mv ".${BUILD_OUTDIR}" "${BUILD_OUTDIR}"
+    - pnpm run build
   artifacts:
     expire_in: 30 day
     paths:
