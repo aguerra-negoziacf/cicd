@@ -1,5 +1,6 @@
 variables:
   NODE_VERSION: "18.12-buster"
+  ARTIFACTS_DIR: "./"
 
 cache:
     key:
@@ -16,6 +17,9 @@ build:
     - pnpm config set store-dir .pnpm-store
   script:
     - pnpm install --prod
+  artifacts:
+    paths:
+      - ${ARTIFACTS_DIR}
   rules:
     - if: '$BUILD_DISABLED'
       when: never
