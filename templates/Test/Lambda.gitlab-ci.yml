@@ -1,0 +1,14 @@
+test:
+  stage: test
+  image: "node:${NODE_VERSION}"
+  before_script:
+    - curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@7
+    - pnpm config set store-dir .pnpm-store
+    - pnpm install
+  script:
+    - pnpm test
+  rules:
+    - if: '$BUILD_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_REF_PROTECTED'
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
