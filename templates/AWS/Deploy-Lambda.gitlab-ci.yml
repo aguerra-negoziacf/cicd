@@ -10,6 +10,9 @@ variables:
     # Deploy Image
     - >
       python3 /lambda_update_code.py
+  needs:
+    - job: build
+      artifacts: true
   rules:
     - if: '$DEPLOY_DISABLED'
       when: never

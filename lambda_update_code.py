@@ -5,7 +5,7 @@ from zipfile import ZipFile
 
 lambdaName               = os.getenv('LAMBDA_NAME')
 roleArn                 = os.getenv('ROLE_ARN')
-pathBuild               = os.getenv('PATH_BUILD', './')
+pathBuild               = os.getenv('BUILD_OUTDIR', './')
 sessionName             = os.getenv('SESSION_NAME', 'lambdaDeploy')
 region                  = os.getenv('AWS_REGION', 'us-east-1')
 
