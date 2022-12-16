@@ -3,9 +3,9 @@ import os
 import shutil
 from zipfile import ZipFile
 
-lambdaName               = os.getenv('LAMBDA_NAME', 'qa-failed-pagares-worker')
-roleArn                 = os.getenv('ROLE_ARN', 'arn:aws:iam::787437540378:role/QANegoziaAdmin')
-pathBuild               = os.getenv('PATH_BUILD', './dist')
+lambdaName               = os.getenv('LAMBDA_NAME')
+roleArn                 = os.getenv('ROLE_ARN')
+pathBuild               = os.getenv('PATH_BUILD', './')
 sessionName             = os.getenv('SESSION_NAME', 'lambdaDeploy')
 region                  = os.getenv('AWS_REGION', 'us-east-1')
 
@@ -30,7 +30,7 @@ def updateContentLambda(client, lambdaName, pathBuild):
         ZipFile = make_zip_file_bytes(path=pathBuild),
     )
 
-    print("Lambda updated...", response['FunctionName']) if response['FunctionName'] == lambdaName else exit(1)
+    print("Lambda updated...", response['FunctionName']) if response['FunctionName'] == lambdaName else exit(0)
 
 def assumeRole(roleArn, sessionName):
     client = boto3.client('sts', region_name=region)
