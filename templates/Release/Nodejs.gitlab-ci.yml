@@ -1,5 +1,5 @@
 .semantic-release:
-  image: node:14-buster-slim
+  image: node:18-buster-slim
   stage: release
   cache:
     paths:
